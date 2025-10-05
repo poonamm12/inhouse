@@ -63,11 +63,11 @@ const EventPlanningDashboard = () => {
       progress: 100,
       lastUpdated: new Date(Date.now() - 7200000)?.toISOString(),
       items: [
-        'Venue: $5,000',
-        'Catering: $8,000',
-        'Speakers: $3,000',
-        'Marketing: $1,500',
-        'Total: $17,500'
+        'Venue: ₹4,15,000',
+        'Catering: ₹6,64,000',
+        'Speakers: ₹2,49,000',
+        'Marketing: ₹1,24,500',
+        'Total: ₹14,52,500'
       ]
     },
     {
@@ -89,10 +89,12 @@ const EventPlanningDashboard = () => {
   ];
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadEvents = async () => {
       try {
         const events = await eventService.getAllEvents();
-        if (events && events.length > 0) {
+        if (isMounted && events && events.length > 0) {
           const latestEvent = events[0];
           setEventData(latestEvent);
           setHasGeneratedContent(true);
@@ -104,6 +106,10 @@ const EventPlanningDashboard = () => {
     };
 
     loadEvents();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleGenerateEvent = async (formData) => {
