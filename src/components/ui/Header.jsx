@@ -75,8 +75,7 @@ const Header = () => {
               <a
                 key={item?.path}
                 href={item?.path}
-                title={item?.tooltip}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-smooth hover:bg-muted ${
+                className={`group flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-smooth hover:bg-muted ${
                   isActivePath(item?.path)
                     ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground'
@@ -84,6 +83,9 @@ const Header = () => {
               >
                 <Icon name={item?.icon} size={16} />
                 <span>{item?.label}</span>
+                <div className="hidden group-hover:block absolute mt-20 z-1300 bg-card border border-border rounded shadow-card px-3 py-2 text-xs text-foreground whitespace-nowrap">
+                  {item?.tooltip}
+                </div>
               </a>
             ))}
           </nav>

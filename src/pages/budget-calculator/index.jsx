@@ -8,6 +8,7 @@ import BudgetBreakdown from './components/BudgetBreakdown';
 import BudgetComparison from './components/BudgetComparison';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
+import { eventService, budgetService } from '../../services/eventService';
 
 const BudgetCalculator = () => {
   const [formData, setFormData] = useState({
@@ -76,25 +77,36 @@ const BudgetCalculator = () => {
     showInfo('Template applied successfully!');
   };
 
-  const handleSaveBudget = () => {
+  const handleSaveBudget = async () => {
     if (!budgetData) {
       showError('Please calculate a budget first');
       return;
     }
 
-    const savedBudgets = JSON.parse(localStorage.getItem('savedBudgets') || '[]');
-    const newBudget = {
-      id: Date.now(),
-      name: `Budget - ${new Date()?.toLocaleDateString()}`,
-      formData,
-      budgetData,
-      createdAt: new Date()?.toISOString()
-    };
+    try {
+      const events = await eventService.getAllEvents();
+      let eventId;
 
-    savedBudgets?.push(newBudget);
-    localStorage.setItem('savedBudgets', JSON.stringify(savedBudgets));
-    
-    showSuccess('Budget saved successfully!');
+      if (events && events.length > 0) {
+        eventId = events[0].id;
+      } else {
+        const newEvent = await eventService.createEvent({
+          eventName: `Budget Plan - ${formData?.city || 'Event'}`,
+          eventType: formData?.eventType,
+          city: formData?.city,
+          venueType: formData?.venueType,
+          audienceSize: formData?.audienceSize,
+          duration: formData?.duration
+        });
+        eventId = newEvent.id;
+      }
+
+      await budgetService.saveBudget(eventId, budgetData);
+      showSuccess('Budget saved successfully!');
+    } catch (error) {
+      console.error('Error saving budget:', error);
+      showError('Failed to save budget. Please try again.');
+    }
   };
 
   const handleExportBudget = () => {

@@ -22,8 +22,7 @@ const EventPlanDetails = () => {
   useEffect(() => {
     const loadEventData = () => {
       setIsLoading(true);
-      
-      // Simulate API call
+
       setTimeout(() => {
         const mockEventData = {
           id: 'evt_001',
@@ -209,13 +208,11 @@ const EventPlanDetails = () => {
         setTimelineData(mockTimelineData);
         setProgressData(mockProgressData);
         setIsLoading(false);
-        
-        showInfo('Event plan loaded successfully');
       }, 1000);
     };
 
     loadEventData();
-  }, [showInfo]);
+  }, []);
 
   const handleUpdateEvent = (updatedData) => {
     setEventData(updatedData);

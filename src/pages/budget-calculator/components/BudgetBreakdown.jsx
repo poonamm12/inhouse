@@ -24,9 +24,9 @@ const BudgetBreakdown = ({
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     })?.format(amount);
@@ -57,39 +57,41 @@ const BudgetBreakdown = ({
       'austin': 1.0
     };
 
+    const usdToInr = 83;
+
     // Base venue costs
     const venueCosts = {
-      'hotel-ballroom': 2000,
-      'conference-center': 1500,
-      'restaurant': 1200,
-      'outdoor-venue': 800,
-      'community-center': 500,
-      'university-hall': 600,
-      'banquet-hall': 1000,
-      'rooftop-venue': 1800
+      'hotel-ballroom': 2000 * usdToInr,
+      'conference-center': 1500 * usdToInr,
+      'restaurant': 1200 * usdToInr,
+      'outdoor-venue': 800 * usdToInr,
+      'community-center': 500 * usdToInr,
+      'university-hall': 600 * usdToInr,
+      'banquet-hall': 1000 * usdToInr,
+      'rooftop-venue': 1800 * usdToInr
     };
 
     // Base catering costs per person
     const cateringCosts = {
-      'full-service': 85,
-      'buffet': 45,
-      'cocktail': 35,
-      'plated-dinner': 75,
-      'box-lunch': 25,
-      'coffee-break': 15,
+      'full-service': 85 * usdToInr,
+      'buffet': 45 * usdToInr,
+      'cocktail': 35 * usdToInr,
+      'plated-dinner': 75 * usdToInr,
+      'box-lunch': 25 * usdToInr,
+      'coffee-break': 15 * usdToInr,
       'no-catering': 0
     };
 
     // Additional services costs
     const serviceCosts = {
-      'av-equipment': 800,
-      'photography': 1200,
-      'music': 600,
-      'flowers': 400,
-      'security': 300,
-      'parking': 200,
-      'registration': 150,
-      'transportation': 500
+      'av-equipment': 800 * usdToInr,
+      'photography': 1200 * usdToInr,
+      'music': 600 * usdToInr,
+      'flowers': 400 * usdToInr,
+      'security': 300 * usdToInr,
+      'parking': 200 * usdToInr,
+      'registration': 150 * usdToInr,
+      'transportation': 500 * usdToInr
     };
 
     const cityMultiplier = cityMultipliers?.[formData?.city] || 1.0;
@@ -97,10 +99,10 @@ const BudgetBreakdown = ({
     const duration = formData?.duration || 4;
 
     // Calculate venue costs
-    const baseVenueCost = venueCosts?.[formData?.venueType] || 1000;
+    const baseVenueCost = venueCosts?.[formData?.venueType] || (1000 * usdToInr);
     const venueCost = Math.round(baseVenueCost * cityMultiplier * (duration / 4));
-    const setupCost = Math.round((formData?.setupTime || 2) * 100 * cityMultiplier);
-    const cleanupCost = Math.round((formData?.cleanupTime || 1) * 80 * cityMultiplier);
+    const setupCost = Math.round((formData?.setupTime || 2) * 100 * usdToInr * cityMultiplier);
+    const cleanupCost = Math.round((formData?.cleanupTime || 1) * 80 * usdToInr * cityMultiplier);
 
     const venueItems = [
       { name: 'Venue Rental', cost: venueCost, description: `${duration} hours rental` },
@@ -137,10 +139,10 @@ const BudgetBreakdown = ({
     });
 
     // Calculate miscellaneous costs
-    const contingency = Math.round((venueCost + cateringCost + serviceFee + taxAmount + 
+    const contingency = Math.round((venueCost + cateringCost + serviceFee + taxAmount +
       servicesItems?.reduce((sum, item) => sum + item?.cost, 0)) * 0.1); // 10% contingency
-    const permits = formData?.eventType === 'outdoor-venue' ? Math.round(200 * cityMultiplier) : 0;
-    const insurance = Math.round(150 * cityMultiplier);
+    const permits = formData?.eventType === 'outdoor-venue' ? Math.round(200 * usdToInr * cityMultiplier) : 0;
+    const insurance = Math.round(150 * usdToInr * cityMultiplier);
 
     const miscellaneousItems = [
       { name: 'Contingency (10%)', cost: contingency, description: 'Unexpected expenses buffer' },
